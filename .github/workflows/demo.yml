@@ -17,7 +17,11 @@ jobs:
         run: npm run test
   build:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
+    outputs:
+      #"script-file es el nombre que damos en linea 35, es elgeible:"
+      #Referencia al step de la linea 35
+      script-file: ${{ steps.publish.outputs.script-file}}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -25,6 +29,10 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: Publish JS Filename
+        id: publish #Agregar id siempre para identificar "step" y obtener valores en linea 22.
+       #Obteniendo nombre de un archivo "js"
+        run: find dist/assets/*.js -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';' 
         #Store folder Airtefacts
       - name: Upload build artifacts
         #Utilizando Action para artefactos (Upload Artifact)
@@ -48,5 +56,8 @@ jobs:
           name: dist-files #Mismo nombre de "Build" para obtener el zip file y descargarlo y unzip
       - name: Output files
         run: ls
+      - name: Output Filename
+      #obteniendo el filename en deploy job, del anterior en job build
+        run:  echo "${{ needs.build.outputs.script-file }}"  
       - name: Deploy
         run: echo "Deploying..."
