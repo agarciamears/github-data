@@ -33,12 +33,20 @@ jobs:
         #Configuración Adicional:
         with:
           name: dist-files #(Nombre)
-          path: | #Path donde se guardaran los archivos? "| para diferentes acciones"
-            dist
-            package.json
+          path: dist #Path donde se guardaran los archivos? "| para diferentes acciones"
+           #path: |
+           # dist
+           # package.json
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Get build Artifacts
+      #Descargando los artefactos de manera seucuencial de "build"
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files #Mismo nombre de "Build" para obtener el zip file y descargarlo y unzip
+      - name: Output files
+        run: ls
       - name: Deploy
         run: echo "Deploying..."
