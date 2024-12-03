@@ -25,6 +25,17 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+        #Store folder Airtefacts
+      - name: Upload build artifacts
+        #Utilizando Action para artefactos (Upload Artifact)
+        #https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v3
+        #Configuración Adicional:
+        with:
+          name: dist-files #(Nombre)
+          path: | #Path donde se guardaran los archivos? "| para diferentes acciones"
+            dist
+            package.json
   deploy:
     needs: build
     runs-on: ubuntu-latest
